@@ -215,3 +215,13 @@
 [data-bs-theme="dark"] .navbar-dark .navbar-nav .nav-link.active {
     color: #fff;
 }
+.footer {
+    background-color: var(--bs-dark);
+    color: var(--bs-light);
+}
+
+[data-bs-theme="dark"] .footer {
+    background-color: #1a1d20;
+    color: #f8f9fa;
+    border-top: 1px solid #2c3034;
+}
