@@ -322,6 +322,10 @@ include_once 'config/database.php';
         });
     </script>
     <script src="assets/js/dark-mode.js"></script>
-    <button id="theme-toggle" class="btn btn-link nav-link" onclick="window.darkMode.toggleTheme()">⚙️</button>
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <?php include "includes/footer.php"; ?>
+        </div>
+    </div>
 </body>
 </html>
