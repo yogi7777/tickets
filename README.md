@@ -20,3 +20,5 @@ Tickets are managed in a table view.
 A booked ticket from an employee appears as a pending request in the table.
 The request is marked as "Pending" and can later be marked as "Picked up" and then "Returned."
 Admins also have the option to cancel a request.
+
+🛑 The project is only available in German.
