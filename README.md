@@ -22,3 +22,11 @@ The request is marked as "Pending" and can later be marked as "Picked up" and th
 Admins also have the option to cancel a request.
 
 🛑 The project is only available in German.
+
+User Interface:
+![image](https://github.com/user-attachments/assets/69301353-4788-47f5-b7f0-c4fd645f6644)
+
+
+Dashboard: Ticket will be collected
+![image](https://github.com/user-attachments/assets/f913dd8c-5bb0-4dcf-8d19-33cbd969eec5)
+
