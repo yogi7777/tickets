@@ -1,4 +1,3 @@
-# Dockerfile für die PHP/Apache-Umgebung
 FROM php:8.2-apache
 
 # System Dependencies installieren
@@ -21,3 +20,9 @@ RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 RUN mkdir -p /var/www/html/uploads \
     && mkdir -p /var/www/html/logs \
     && chown -R www-data:www-data /var/www/html
+
+# Kopiere den Source Code
+COPY src/ /var/www/html/
+
+# Setze die Berechtigungen
+RUN chown -R www-data:www-data /var/www/html
