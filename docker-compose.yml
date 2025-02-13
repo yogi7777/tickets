@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  tickets-web:
+    image: tickets-web:latest
+    build:
+      context: https://github.com/yogi7777/tickets.git#main
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    volumes:
+      - tickets-uploads:/var/www/html/uploads
+    environment:
+      - DB_HOST=tickets-db
+      - DB_NAME=tickets
+      - DB_USER=ticketuser
+      - DB_PASSWORD=secure_password  # Sollte in als Variable gesetzt werden
+      - SMTP_HOST=smtp.example.com
+      - SMTP_PORT=587
+      - SMTP_USER=your_smtp_user
+      - SMTP_PASSWORD=your_smtp_password  # Sollte in als Variable gesetzt werden
+      - SMTP_FROM=noreply@example.com
+      - SMTP_NAME=Ticket System
+      - ADMIN_EMAIL=empfang@example.com
+    depends_on:
+      - tickets-db
+    networks:
+      - tickets-network
+    restart: unless-stopped
+
+  tickets-db:
+    image: mariadb:10.6
+    environment:
+      - MYSQL_DATABASE=tickets
+      - MYSQL_USER=ticketuser
+      - MYSQL_PASSWORD=secure_password  # Sollte in als Variable gesetzt werden
+      - MYSQL_ROOT_PASSWORD=root_secure_password  # Sollte in als Variable gesetzt werden
+    volumes:
+      - tickets-db-data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - tickets-network
+    restart: unless-stopped
+
+networks:
+  tickets-network:
+    driver: bridge
+
+volumes:
+  tickets-uploads:
+    driver: local
+  tickets-db-data:
+    driver: local
