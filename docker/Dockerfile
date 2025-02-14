@@ -22,6 +22,7 @@ RUN echo "SetEnv DB_USER \${DB_USER}" >> /etc/apache2/conf-available/environment
     echo "SetEnv SMTP_FROM \${SMTP_FROM}" >> /etc/apache2/conf-available/environment.conf && \
     echo "SetEnv SMTP_NAME \${SMTP_NAME}" >> /etc/apache2/conf-available/environment.conf && \
     echo "SetEnv ADMIN_EMAIL \${ADMIN_EMAIL}" >> /etc/apache2/conf-available/environment.conf && \
+    echo "SetEnv SMTP_ENCRYPTION \${SMTP_ENCRYPTION}" >> /etc/apache2/conf-available/environment.conf && \
     a2enconf environment
 
 # Arbeitsverzeichnis setzen
