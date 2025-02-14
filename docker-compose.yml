@@ -3,8 +3,8 @@ version: '3.8'
 services:
   web:
     build:
-      context: https://github.com/yogi7777/tickets.git#main
-      dockerfile: Dockerfile
+      context: https://github.com/dein-user/dein-repo.git#main
+      dockerfile: docker/Dockerfile
     container_name: php_app
     restart: always
     ports:
@@ -28,7 +28,6 @@ services:
       - db
 
   db:
-    image: mariadb:latest
     build:
       context: .
       dockerfile: db.Dockerfile
@@ -39,10 +38,10 @@ services:
       MYSQL_DATABASE: projekt_db
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-    volumes:
-      - db_data:/var/lib/mysql
     ports:
       - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
