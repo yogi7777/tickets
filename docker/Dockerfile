@@ -5,10 +5,9 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     zip \
     unzip \
-    git \
     && docker-php-ext-install zip pdo pdo_mysql
 
-# Apache-Konfiguration
+# Apache-Konfiguration aktivieren
 RUN a2enmod rewrite
 
 # Arbeitsverzeichnis setzen
@@ -18,7 +17,7 @@ WORKDIR /var/www/html
 RUN mkdir -p /var/www/html/uploads /var/www/html/logs \
     && chown -R www-data:www-data /var/www/html
 
-# Repository von GitHub klonen und Code in /var/www/html kopieren
+# Klone das Repository und kopiere den Quellcode in das Apache-Verzeichnis
 RUN git clone --depth=1 https://github.com/yogi7777/tickets.git /repo \
     && cp -r /repo/src/* /var/www/html/ \
     && chown -R www-data:www-data /var/www/html \
