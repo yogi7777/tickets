@@ -31,16 +31,16 @@ VOLUME /var/www/html/uploads
 
 # Skript hinzufügen, das Umgebungsvariablen setzt
 RUN echo '#!/bin/bash' > /usr/local/bin/docker-entrypoint.sh && \
-    echo 'echo "SetEnv DB_USER ${DB_USER}" > /etc/apache2/conf-available/environment.conf' >> /usr/local/bin/docker-entrypoint.sh && \
-    echo 'echo "SetEnv DB_PASSWORD ${DB_PASSWORD}" >> /etc/apache2/conf-available/environment.conf' >> /usr/local/bin/docker-entrypoint.sh && \
-    echo 'echo "SetEnv SMTP_HOST ${SMTP_HOST}" >> /etc/apache2/conf-available/environment.conf' >> /usr/local/bin/docker-entrypoint.sh && \
-    echo 'echo "SetEnv SMTP_PORT ${SMTP_PORT}" >> /etc/apache2/conf-available/environment.conf' >> /usr/local/bin/docker-entrypoint.sh && \
-    echo 'echo "SetEnv SMTP_USER ${SMTP_USER}" >> /etc/apache2/conf-available/environment.conf' >> /usr/local/bin/docker-entrypoint.sh && \
-    echo 'echo "SetEnv SMTP_PASSWORD ${SMTP_PASSWORD}" >> /etc/apache2/conf-available/environment.conf' >> /usr/local/bin/docker-entrypoint.sh && \
-    echo 'echo "SetEnv SMTP_FROM ${SMTP_FROM}" >> /etc/apache2/conf-available/environment.conf' >> /usr/local/bin/docker-entrypoint.sh && \
-    echo 'echo "SetEnv SMTP_NAME ${SMTP_NAME}" >> /etc/apache2/conf-available/environment.conf' >> /usr/local/bin/docker-entrypoint.sh && \
-    echo 'echo "SetEnv ADMIN_EMAIL ${ADMIN_EMAIL}" >> /etc/apache2/conf-available/environment.conf' >> /usr/local/bin/docker-entrypoint.sh && \
-    echo 'echo "SetEnv SMTP_ENCRYPTION ${SMTP_ENCRYPTION}" >> /etc/apache2/conf-available/environment.conf' >> /usr/local/bin/docker-entrypoint.sh && \
+    echo 'echo "SetEnv DB_USER \"${DB_USER}\"" > /etc/apache2/conf-available/environment.conf' >> /usr/local/bin/docker-entrypoint.sh && \
+    echo 'echo "SetEnv DB_PASSWORD \"${DB_PASSWORD}\"" >> /etc/apache2/conf-available/environment.conf' >> /usr/local/bin/docker-entrypoint.sh && \
+    echo 'echo "SetEnv SMTP_HOST \"${SMTP_HOST}\"" >> /etc/apache2/conf-available/environment.conf' >> /usr/local/bin/docker-entrypoint.sh && \
+    echo 'echo "SetEnv SMTP_PORT \"${SMTP_PORT}\"" >> /etc/apache2/conf-available/environment.conf' >> /usr/local/bin/docker-entrypoint.sh && \
+    echo 'echo "SetEnv SMTP_USER \"${SMTP_USER}\"" >> /etc/apache2/conf-available/environment.conf' >> /usr/local/bin/docker-entrypoint.sh && \
+    echo 'echo "SetEnv SMTP_PASSWORD \"${SMTP_PASSWORD}\"" >> /etc/apache2/conf-available/environment.conf' >> /usr/local/bin/docker-entrypoint.sh && \
+    echo 'echo "SetEnv SMTP_FROM \"${SMTP_FROM}\"" >> /etc/apache2/conf-available/environment.conf' >> /usr/local/bin/docker-entrypoint.sh && \
+    echo 'echo "SetEnv SMTP_NAME \"${SMTP_NAME}\"" >> /etc/apache2/conf-available/environment.conf' >> /usr/local/bin/docker-entrypoint.sh && \
+    echo 'echo "SetEnv ADMIN_EMAIL \"${ADMIN_EMAIL}\"" >> /etc/apache2/conf-available/environment.conf' >> /usr/local/bin/docker-entrypoint.sh && \
+    echo 'echo "SetEnv SMTP_ENCRYPTION \"${SMTP_ENCRYPTION}\"" >> /etc/apache2/conf-available/environment.conf' >> /usr/local/bin/docker-entrypoint.sh && \
     echo 'a2enconf environment' >> /usr/local/bin/docker-entrypoint.sh && \
     echo 'exec "$@"' >> /usr/local/bin/docker-entrypoint.sh && \
     chmod +x /usr/local/bin/docker-entrypoint.sh
