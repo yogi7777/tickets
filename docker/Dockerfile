@@ -6,6 +6,7 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     zip \
     unzip \
+    gettext-base \
     && docker-php-ext-install zip pdo pdo_mysql
 
 # Apache-Konfiguration aktivieren
