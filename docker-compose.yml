@@ -3,8 +3,8 @@ version: '3.8'
 services:
   web:
     build:
-      context: https://github.com/dein-user/dein-repo.git#main
-      dockerfile: docker/Dockerfile
+      context: https://github.com/yogi7777/tickets.git#main
+      dockerfile: Dockerfile
     container_name: php_app
     restart: always
     ports:
