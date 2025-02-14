@@ -1,28 +1,28 @@
 FROM php:8.2-apache
 
-# System Dependencies installieren
+# Systemabhängigkeiten installieren
 RUN apt-get update && apt-get install -y \
     libzip-dev \
     zip \
     unzip \
+    git \
     && docker-php-ext-install zip pdo pdo_mysql
 
-# Apache Konfiguration
+# Apache-Konfiguration
 RUN a2enmod rewrite
 
 # Arbeitsverzeichnis setzen
 WORKDIR /var/www/html
 
-# PHP Konfiguration
-RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
-
 # Erstelle benötigte Ordner und setze Berechtigungen
-RUN mkdir -p /var/www/html/uploads \
-    && mkdir -p /var/www/html/logs \
+RUN mkdir -p /var/www/html/uploads /var/www/html/logs \
     && chown -R www-data:www-data /var/www/html
 
-# Kopiere den Source Code
-COPY src/ /var/www/html/
+# Repository von GitHub klonen
+RUN git clone --depth=1 https://github.com/yogi7777/tickets.git /var/www/html \
+    && chown -R www-data:www-data /var/www/html
 
-# Setze die Berechtigungen
-RUN chown -R www-data:www-data /var/www/html
+# Persistenter Uploads-Pfad (Docker Volume)
+VOLUME /var/www/html/uploads
+
+CMD ["apache2-foreground"]
