@@ -7,7 +7,7 @@ class Database {
     private $conn;
 
     public function __construct() {
-        $this->host = 'localhost';
+        $this->host = 'db';
         $this->db_name = 'tickets';
         $this->username = getenv('DB_USER') ?: 'root';
         $this->password = getenv('DB_PASSWORD') ?: '';
