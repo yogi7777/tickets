@@ -32,7 +32,7 @@ services:
   db:
     build:
       context: https://github.com/yogi7777/tickets.git#main
-      dockerfile: db/Dockerfile  # Pfad zum neuen Dockerfile
+      dockerfile: db/Dockerfile
     environment:
       - MYSQL_DATABASE=tickets
       - MYSQL_USER=${DB_USER}
