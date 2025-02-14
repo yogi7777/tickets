@@ -18,9 +18,11 @@ WORKDIR /var/www/html
 RUN mkdir -p /var/www/html/uploads /var/www/html/logs \
     && chown -R www-data:www-data /var/www/html
 
-# Repository von GitHub klonen
-RUN git clone --depth=1 https://github.com/yogi7777/tickets.git /var/www/html \
-    && chown -R www-data:www-data /var/www/html
+# Repository von GitHub klonen und Code in /var/www/html kopieren
+RUN git clone --depth=1 https://github.com/yogi7777/tickets.git /repo \
+    && cp -r /repo/src/* /var/www/html/ \
+    && chown -R www-data:www-data /var/www/html \
+    && rm -rf /repo
 
 # Persistenter Uploads-Pfad (Docker Volume)
 VOLUME /var/www/html/uploads
