@@ -1,53 +1,40 @@
 version: '3.8'
 
 services:
-  tickets-web:
-    image: tickets-web:latest
+  web:
     build:
-      context: https://github.com/yogi7777/tickets.git#main
-      dockerfile: Dockerfile
+      context: https://github.com/dein-user/dein-repo.git#main
+      dockerfile: docker/Dockerfile
+    container_name: php_app
+    restart: always
     ports:
       - "8080:80"
     volumes:
-      - tickets-uploads:/var/www/html/uploads
+      - app_data:/var/www/html
+      - uploads_data:/var/www/html/uploads
     environment:
-      - DB_HOST=tickets-db
-      - DB_NAME=tickets
-      - DB_USER=ticketuser
-      - DB_PASSWORD=secure_password  # Sollte in als Variable gesetzt werden
-      - SMTP_HOST=smtp.example.com
-      - SMTP_PORT=587
-      - SMTP_USER=your_smtp_user
-      - SMTP_PASSWORD=your_smtp_password  # Sollte in als Variable gesetzt werden
-      - SMTP_FROM=noreply@example.com
-      - SMTP_NAME=Ticket System
-      - ADMIN_EMAIL=empfang@example.com
+      - DB_HOST=db
+      - DB_NAME=projekt_db
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
     depends_on:
-      - tickets-db
-    networks:
-      - tickets-network
-    restart: unless-stopped
+      - db
 
-  tickets-db:
-    image: mariadb:10.6
+  db:
+    image: mariadb:latest
+    container_name: mariadb
+    restart: always
     environment:
-      - MYSQL_DATABASE=tickets
-      - MYSQL_USER=ticketuser
-      - MYSQL_PASSWORD=secure_password  # Sollte in als Variable gesetzt werden
-      - MYSQL_ROOT_PASSWORD=root_secure_password  # Sollte in als Variable gesetzt werden
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: projekt_db
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
-      - tickets-db-data:/var/lib/mysql
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
-    networks:
-      - tickets-network
-    restart: unless-stopped
-
-networks:
-  tickets-network:
-    driver: bridge
+      - db_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
 
 volumes:
-  tickets-uploads:
-    driver: local
-  tickets-db-data:
-    driver: local
+  db_data:
+  app_data:
+  uploads_data:
