@@ -29,8 +29,12 @@ RUN git clone --depth=1 https://github.com/yogi7777/tickets.git /repo \
 # Persistenter Uploads-Pfad (Docker Volume)
 VOLUME /var/www/html/uploads
 
-# Environment variablen in die Apache-Konfiguration setzen
-COPY apache/environment.conf /etc/apache2/conf-available/environment.conf
+# Skript hinzufügen, das Umgebungsvariablen setzt
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-# Docker Entrypoint: Setze die Umgebungsvariablen mit envsubst und starte Apache
-CMD envsubst < /etc/apache2/conf-available/environment.conf > /etc/apache2/conf-enabled/environment.conf && apache2-foreground
+# Docker Entrypoint: Setze die Umgebungsvariablen und starte Apache
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+
+# Apache-Standardbefehl
+CMD ["apache2-foreground"]
