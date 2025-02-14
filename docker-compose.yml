@@ -38,7 +38,6 @@ services:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     volumes:
       - db_data:/var/lib/mysql
-      - /home/<YOUR USERNAME>/Documents/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     networks:
       - tickets-network
     restart: always
