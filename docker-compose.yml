@@ -30,7 +30,9 @@ services:
     restart: always
 
   db:
-    image: mariadb:10.6
+    build:
+      context: https://github.com/yogi7777/tickets.git#main
+      dockerfile: db/Dockerfile  # Pfad zum neuen Dockerfile
     environment:
       - MYSQL_DATABASE=tickets
       - MYSQL_USER=${DB_USER}
