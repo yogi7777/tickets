@@ -14,7 +14,7 @@ services:
       - uploads_data:/var/www/html/uploads
     environment:
       - DB_HOST=db
-      - DB_NAME=projekt_db
+      - DB_NAME=tickets
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - SMTP_HOST=${SMTP_HOST}
@@ -24,6 +24,7 @@ services:
       - SMTP_FROM=${SMTP_FROM}
       - SMTP_NAME=${SMTP_NAME}
       - ADMIN_EMAIL=${ADMIN_EMAIL}
+      - SMTP_ENCRYPTION=${SMTP_ENCRYPTION}
     depends_on:
       - db
 
