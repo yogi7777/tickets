@@ -13,6 +13,18 @@ RUN apt-get update && apt-get install -y \
 RUN a2enmod rewrite
 RUN a2enmod env
 
+#Variable definieren
+ENV DB_USER=${DB_USER}
+ENV DB_PASSWORD=${DB_PASSWORD}
+ENV SMTP_HOST=${SMTP_HOST}
+ENV SMTP_PORT=${SMTP_PORT}
+ENV SMTP_USER=${SMTP_USER}
+ENV SMTP_PASSWORD=${SMTP_PASSWORD}
+ENV SMTP_FROM=${SMTP_FROM}
+ENV SMTP_NAME=${SMTP_NAME}
+ENV ADMIN_EMAIL=${ADMIN_EMAIL}
+ENV SMTP_ENCRYPTION=${SMTP_ENCRYPTION}
+
 # Aktiviere alle Umgebungsvariablen für PHP
 RUN echo "SetEnv DB_USER \${DB_USER}" >> /etc/apache2/conf-available/environment.conf && \
     echo "SetEnv DB_PASSWORD \${DB_PASSWORD}" >> /etc/apache2/conf-available/environment.conf && \
