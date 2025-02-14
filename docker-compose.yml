@@ -27,6 +27,8 @@ services:
       - SMTP_ENCRYPTION=${SMTP_ENCRYPTION}
     depends_on:
       - db
+    networks:
+      - tickets-network
 
   db:
     build:
@@ -43,15 +45,12 @@ services:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
+    networks:
+      - tickets-network
 
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    restart: always
-    ports:
-      - "8081:80"
-    environment:
-      PMA_HOST: db
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+networks:
+  tickets-network:
+    driver: bridge
 
 volumes:
   db_data:
