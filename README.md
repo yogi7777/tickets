@@ -23,8 +23,6 @@ Admins also have the option to cancel a request.
 
 🛑 The project is only available in German.
 
-Das /db/init.sql muss vorgängig auf das Linux System kopiert werden und im docker-compose.yml mit dem richtigen Pfad angehängt werden.
-Wenn jemand weiss, wie ich das direkt vom Repo holen kann, her mit den Tipps.
 
 User Interface:
 
