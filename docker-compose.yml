@@ -5,7 +5,7 @@ services:
     build:
       context: https://github.com/yogi7777/tickets.git#main
       dockerfile: docker/Dockerfile
-    container_name: php_app
+    container_name: ticket_app
     restart: always
     ports:
       - "8080:80"
@@ -31,10 +31,8 @@ services:
       - tickets-network
 
   db:
-    build:
-      context: .
-      dockerfile: db/Dockerfile
-    container_name: mariadb
+    image: mariadb:10.6
+    container_name: ticket_mariadb
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -45,6 +43,7 @@ services:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     networks:
       - tickets-network
 
