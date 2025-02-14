@@ -13,31 +13,6 @@ RUN apt-get update && apt-get install -y \
 RUN a2enmod rewrite
 RUN a2enmod env
 
-#Variable definieren
-ENV DB_USER=${DB_USER}
-ENV DB_PASSWORD=${DB_PASSWORD}
-ENV SMTP_HOST=${SMTP_HOST}
-ENV SMTP_PORT=${SMTP_PORT}
-ENV SMTP_USER=${SMTP_USER}
-ENV SMTP_PASSWORD=${SMTP_PASSWORD}
-ENV SMTP_FROM=${SMTP_FROM}
-ENV SMTP_NAME=${SMTP_NAME}
-ENV ADMIN_EMAIL=${ADMIN_EMAIL}
-ENV SMTP_ENCRYPTION=${SMTP_ENCRYPTION}
-
-# Aktiviere alle Umgebungsvariablen für PHP
-RUN echo "SetEnv DB_USER \${DB_USER}" >> /etc/apache2/conf-available/environment.conf && \
-    echo "SetEnv DB_PASSWORD \${DB_PASSWORD}" >> /etc/apache2/conf-available/environment.conf && \
-    echo "SetEnv SMTP_HOST \${SMTP_HOST}" >> /etc/apache2/conf-available/environment.conf && \
-    echo "SetEnv SMTP_PORT \${SMTP_PORT}" >> /etc/apache2/conf-available/environment.conf && \
-    echo "SetEnv SMTP_USER \${SMTP_USER}" >> /etc/apache2/conf-available/environment.conf && \
-    echo "SetEnv SMTP_PASSWORD \${SMTP_PASSWORD}" >> /etc/apache2/conf-available/environment.conf && \
-    echo "SetEnv SMTP_FROM \${SMTP_FROM}" >> /etc/apache2/conf-available/environment.conf && \
-    echo "SetEnv SMTP_NAME \${SMTP_NAME}" >> /etc/apache2/conf-available/environment.conf && \
-    echo "SetEnv ADMIN_EMAIL \${ADMIN_EMAIL}" >> /etc/apache2/conf-available/environment.conf && \
-    echo "SetEnv SMTP_ENCRYPTION \${SMTP_ENCRYPTION}" >> /etc/apache2/conf-available/environment.conf && \
-    a2enconf environment
-
 # Arbeitsverzeichnis setzen
 WORKDIR /var/www/html
 
@@ -54,4 +29,8 @@ RUN git clone --depth=1 https://github.com/yogi7777/tickets.git /repo \
 # Persistenter Uploads-Pfad (Docker Volume)
 VOLUME /var/www/html/uploads
 
-CMD ["apache2-foreground"]
+# Environment variablen in die Apache-Konfiguration setzen
+COPY apache/environment.conf /etc/apache2/conf-available/environment.conf
+
+# Docker Entrypoint: Setze die Umgebungsvariablen mit envsubst und starte Apache
+CMD envsubst < /etc/apache2/conf-available/environment.conf > /etc/apache2/conf-enabled/environment.conf && apache2-foreground
