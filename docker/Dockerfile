@@ -30,7 +30,7 @@ RUN git clone --depth=1 https://github.com/yogi7777/tickets.git /repo \
 VOLUME /var/www/html/uploads
 
 # Skript hinzufügen, das Umgebungsvariablen setzt
-COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+COPY docker/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 # Docker Entrypoint: Setze die Umgebungsvariablen und starte Apache
