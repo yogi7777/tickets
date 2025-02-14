@@ -17,6 +17,13 @@ services:
       - DB_NAME=projekt_db
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+      - SMTP_FROM=${SMTP_FROM}
+      - SMTP_NAME=${SMTP_NAME}
+      - ADMIN_EMAIL=${ADMIN_EMAIL}
     depends_on:
       - db
 
