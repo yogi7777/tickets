@@ -23,8 +23,6 @@ RUN mkdir -p /var/www/html/uploads /var/www/html/logs \
 # Klone das Repository und kopiere den Quellcode in das Apache-Verzeichnis
 RUN git clone --depth=1 https://github.com/yogi7777/tickets.git /repo \
     && cp -r /repo/src/* /var/www/html/ \
-    && mkdir -p /docker-entrypoint-initdb.d \
-    && cp /repo/db/init.sql /docker-entrypoint-initdb.d/init.sql \
     && chown -R www-data:www-data /var/www/html \
     && rm -rf /repo
 
