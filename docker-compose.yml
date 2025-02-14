@@ -4,7 +4,7 @@ services:
   web:
     build:
       context: https://github.com/yogi7777/tickets.git#main
-      dockerfile: docker/Dockerfile  # Hier wird das Dockerfile aus dem richtigen Ordner genommen
+      dockerfile: docker/Dockerfile
     container_name: php_app
     restart: always
     ports:
@@ -30,7 +30,7 @@ services:
 
   db:
     build:
-      context: .  # Hier wird der aktuelle Kontext verwendet, da wir das lokale DB-Dockerfile verwenden
+      context: .
       dockerfile: db/Dockerfile
     container_name: mariadb
     restart: always
@@ -43,7 +43,6 @@ services:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
-    # Hier muss das init.sql durch das Dockerfile von MariaDB gesetzt werden, also kein zusätzlicher Copy-Befehl nötig
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
