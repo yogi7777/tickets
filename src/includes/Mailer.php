@@ -141,14 +141,6 @@ class Mailer {
 
     public function sendCancellationEmail($bookingData) {
         try {
-            
-            $db = new Database();
-            $conn = $db->getConnection();
-            $query = "SELECT name FROM products WHERE id = ?";
-            $stmt = $conn->prepare($query);
-            $stmt->execute([$bookingData['productId']]);
-            $product = $stmt->fetch(PDO::FETCH_ASSOC);
-            
             $this->mailer->clearAddresses();
             $this->mailer->addAddress($bookingData['email']); // Geändert von 'email'
             $this->mailer->isHTML(true);
@@ -164,9 +156,9 @@ class Mailer {
                 <p>Hallo {$bookingData['firstName']} {$bookingData['lastName']},</p>
                 <p>Deine Buchung wurde storniert.</p>
                 <ul>
-                    <li>Produkt: {$product['name']}</li>
+                    <li>Produkt: {$bookingData['product_name']}</li>
                     <li>Datum: " . date('d.m.Y', strtotime($bookingData['date'])) . "</li>
-                    <li>Anzahl Tickets: {$bookingData['ticketCount']} Stk.</li>
+                    <li>Anzahl Tickets: {$bookingData['number_of_tickets']} Stk.</li>
                 </ul>
                 <p>Bei Fragen kannst du dich gerne an uns wenden.</p>
                 <p>Mit freundlichen Grüssen<br> Admnistration</p>
