@@ -51,7 +51,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                             'date' => $booking['booking_date'],
                             'product_name' => $booking['product_name']
                         );
-                        sendCancellationEmail($emailData);
+                        $mailer = new Mailer();
+                        $mailer->sendCancellationEmail($emailData);
                         
                         $db->commit();
                         $message = 'Buchung erfolgreich storniert';
