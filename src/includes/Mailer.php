@@ -73,19 +73,19 @@ class Mailer {
             $message = "
             <html>
             <head>
-                <title>Ihre Buchungsbestätigung</title>
+                <title>Deine Buchungsbestätigung</title>
             </head>
             <body>
-                <h2>Vielen Dank für Ihre Buchung!</h2>
-                <p>Sehr geehrte(r) {$bookingData['firstName']} {$bookingData['lastName']},</p>
-                <p>Ihre Buchung wurde erfolgreich registriert:</p>
+                <h2>Vielen Dank für deine Buchung!</h2>
+                <p>Hallo {$bookingData['firstName']} {$bookingData['lastName']},</p>
+                <p>Deine Buchung wurde erfolgreich registriert:</p>
                 <ul>
                     <li>Produkt: {$product['name']}</li>
                     <li>Datum: " . date('d.m.Y', strtotime($bookingData['date'])) . "</li>
                     <li>Anzahl Tickets: {$bookingData['ticketCount']}</li>
                 </ul>
-                <p>Bitte holen Sie Ihre Tickets am Empfang ab.</p>
-                <p>Mit freundlichen Grüßen<br>Ihr Team</p>
+                <p>Bitte holen die Tickets am Empfang ab.</p>
+                <p>Mit freundlichen Grüssen<br>Empfang</p>
             </body>
             </html>";
     
@@ -100,14 +100,14 @@ class Mailer {
     // Das Gleiche auch für die Admin-Benachrichtigung
     public function sendAdminNotification($bookingData) {
         try {
-            // Produktname aus der Datenbank holen
+            
             $db = new Database();
             $conn = $db->getConnection();
             $query = "SELECT name FROM products WHERE id = ?";
             $stmt = $conn->prepare($query);
             $stmt->execute([$bookingData['productId']]);
             $product = $stmt->fetch(PDO::FETCH_ASSOC);
-    
+            
             $this->mailer->clearAddresses();
             $this->mailer->addAddress($this->config['admin_email']);
             $this->mailer->isHTML(true);
@@ -141,7 +141,7 @@ class Mailer {
 
     public function sendCancellationEmail($bookingData) {
         try {
-            // Produktname aus der Datenbank holen
+            
             $db = new Database();
             $conn = $db->getConnection();
             $query = "SELECT name FROM products WHERE id = ?";
@@ -150,9 +150,9 @@ class Mailer {
             $product = $stmt->fetch(PDO::FETCH_ASSOC);
             
             $this->mailer->clearAddresses();
-            $this->mailer->addAddress($bookingData['email']);
+            $this->mailer->addAddress($bookingData['email']); // Geändert von 'email'
             $this->mailer->isHTML(true);
-            $this->mailer->Subject = 'Buchung storniert';
+            $this->mailer->Subject = 'Stornierung Ihrer Buchung';
             
             $message = "
             <html>
@@ -161,15 +161,15 @@ class Mailer {
             </head>
             <body>
                 <h2>Ihre Buchung wurde storniert</h2>
-                <p>Sehr geehrte(r) {$bookingData['firstName']} {$bookingData['lastName']},</p>
-                <p>Ihre Buchung wurde storniert.</p>
+                <p>Hallo {$bookingData['firstName']} {$bookingData['lastName']},</p>
+                <p>Deine Buchung wurde storniert.</p>
                 <ul>
                     <li>Produkt: {$product['name']}</li>
                     <li>Datum: " . date('d.m.Y', strtotime($bookingData['date'])) . "</li>
-                    <li>Anzahl Tickets: {$bookingData['ticketCount']}</li>
+                    <li>Anzahl Tickets: {$bookingData['ticketCount']} Stk.</li>
                 </ul>
-                <p>Bei Fragen können Sie sich gerne an uns wenden.</p>
-                <p>Mit freundlichen Grüßen<br>Ihr Team</p>
+                <p>Bei Fragen kannst du dich gerne an uns wenden.</p>
+                <p>Mit freundlichen Grüssen<br> Admnistration</p>
             </body>
             </html>";
     
