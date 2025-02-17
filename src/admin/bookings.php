@@ -49,7 +49,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                             'lastName' => $booking['customer_lastname'],
                             'email' => $booking['customer_email'],
                             'date' => $booking['booking_date'],
-                            'product_name' => $booking['product_name']
+                            'product_name' => $booking['product_name'],
+                            'number_of_tickets' => $booking['number_of_tickets']
                         );
                         $mailer = new Mailer();
                         $mailer->sendCancellationEmail($emailData);
@@ -363,6 +364,8 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <form method="POST" class="d-inline" onsubmit="return confirm('Wirklich stornieren?');">
                                         <input type="hidden" name="action" value="cancel">
                                         <input type="hidden" name="booking_id" value="<?php echo $booking['id']; ?>">
+                                        <input type="hidden" name="customer_email" value="<?php echo $booking['customer_email']; ?>">
+                                        <input type="hidden" name="number_of_tickets" value="<?php echo $booking['number_of_tickets']; ?>">
                                         <button type="submit" class="btn btn-sm btn-danger" title="Stornieren">
                                             <i class="bi bi-trash"></i>
                                         </button>
