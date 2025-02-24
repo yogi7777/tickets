@@ -306,30 +306,26 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <td><?php echo date('d.m.Y', strtotime($booking['booking_date'])); ?></td>
                             <td>
                                 <strong><?php echo htmlspecialchars($booking['product_name']); ?></strong>
-                                <?php if ($booking['ticket_picked_up']): ?>
-                                    <div class="small mt-2 text-muted">
-                                        <?php 
-                                        // Abgeholte Seriennummern für diese Buchung abrufen
-                                        $query = "SELECT ps.serial_number, bs.returned_at 
-                                                 FROM booking_serials bs 
-                                                 JOIN product_serials ps ON bs.serial_id = ps.id 
-                                                 WHERE bs.booking_id = ? AND bs.picked_up_at IS NOT NULL";
-                                        $stmt = $db->prepare($query);
-                                        $stmt->execute([$booking['id']]);
-                                        $serials = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                                        
-                                        foreach ($serials as $serial): ?>
-                                            <div class="serial-number">
-                                                <?php echo htmlspecialchars($serial['serial_number']); ?>
-                                                <?php if ($serial['returned_at']): ?>
-                                                    <i class="bi bi-check-circle-fill text-success" title="zurückgegeben"></i>
-                                                <?php else: ?>
+                                    <?php if ($booking['ticket_picked_up'] && !$booking['ticket_returned']): ?>
+                                        <div class="small mt-2 text-muted">
+                                            <?php 
+                                            // Abgeholte Seriennummern für diese Buchung abrufen
+                                            $query = "SELECT ps.serial_number, bs.returned_at 
+                                                     FROM booking_serials bs 
+                                                     JOIN product_serials ps ON bs.serial_id = ps.id 
+                                                     WHERE bs.booking_id = ? AND bs.picked_up_at IS NOT NULL";
+                                            $stmt = $db->prepare($query);
+                                            $stmt->execute([$booking['id']]);
+                                            $serials = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                                            
+                                            foreach ($serials as $serial): ?>
+                                                <div class="serial-number">
+                                                    <?php echo htmlspecialchars($serial['serial_number']); ?>
                                                     <i class="bi bi-arrow-right-circle-fill text-warning" title="ausgeliehen"></i>
-                                                <?php endif; ?>
-                                            </div>
-                                        <?php endforeach; ?>
-                                    </div>
-                                <?php endif; ?>
+                                                </div>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    <?php endif; ?>
                             </td>
                             <td><?php echo htmlspecialchars($booking['customer_firstname'] . ' ' . $booking['customer_lastname']); ?></td>
                             <td><?php echo htmlspecialchars($booking['customer_email']); ?></td>
