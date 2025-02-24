@@ -114,21 +114,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             if ($booking_id) {
                 try {
                     $db->beginTransaction();
-
+        
                     // Buchung aktualisieren
                     $query = "UPDATE bookings SET ticket_returned = NOW(), booking_status = 'done' WHERE id = ?";
                     $stmt = $db->prepare($query);
                     
                     if ($stmt->execute([$booking_id])) {
-                        // Seriennummern-Status aktualisieren
+                        // Seriennummern wieder auf 'available' setzen
                         $query = "UPDATE product_serials ps 
-                                JOIN booking_serials bs ON ps.id = bs.serial_id 
-                                SET ps.status = 'returned',
-                                    bs.returned_at = NOW()
-                                WHERE bs.booking_id = ?";
+                                 JOIN booking_serials bs ON ps.id = bs.serial_id 
+                                 SET ps.status = 'available',
+                                     bs.returned_at = NOW()
+                                 WHERE bs.booking_id = ?";
                         $stmt = $db->prepare($query);
                         $stmt->execute([$booking_id]);
-
+        
                         $db->commit();
                         $message = 'Ticket-Rückgabe erfolgreich vermerkt';
                         $messageType = 'success';
