@@ -99,7 +99,7 @@ $stats['active_products'] = $result['active'];
         <!-- Aktuelle Buchungen Tabelle -->
         <div class="card mt-4">
             <div class="card-header">
-                <h5 class="mb-0"><a href="bookings.php">Aktuelle Buchungen</a></h5>
+                <h5 class="mb-0"><a href="bookings.php">Alle Buchungen</a></h5>
             </div>
             <div class="card-body">
                 <table class="table">
