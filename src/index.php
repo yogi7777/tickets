@@ -1,5 +1,6 @@
 <?php
 include_once 'config/database.php';
+require_once __DIR__ . '/session-check.php';
 ?>
 <!DOCTYPE html>
 <html lang="de">
