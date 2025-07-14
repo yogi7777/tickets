@@ -6,6 +6,12 @@ return [
     'password' => getenv('SMTP_PASSWORD') ?: '',
     'from_email' => getenv('SMTP_FROM') ?: 'noreply@example.com',
     'from_name' => getenv('SMTP_NAME') ?: 'Ticket System',
-    'admin_email' => getenv('ADMIN_EMAIL') ?: 'empfang@example.com',
-    'encryption' => getenv('SMTP_ENCRYPTION') ?: 'tls'
+    'admin_email' => getenv('ADMIN_EMAIL') ?: 'mail@example.com',
+    'system_email' => getenv('SYSTEM_EMAIL') ?: 'webhoster@hoster.com',
+    'envelope_from' =>  getenv('ENVOLPE_FROM') ?: 'webhoster@hoster.com',  //Return-Path für Bounces
+    'encryption' => getenv('SMTP_ENCRYPTION') ?: 'tls',
+    'bounce_handling' => true,
+    'use_reply_to' => true,
+    'reply_to_email' => 'mail@example.com',       // Explizite Reply-To Adresse
+    'reply_to_name' => 'Ticket System',
 ];
