@@ -1,6 +1,7 @@
 <?php
 require_once '../config/database.php';
 require_once '../includes/auth.php';
+require_once '../session-check.php';
 
 $database = new Database();
 $db = $database->getConnection();
@@ -71,6 +72,8 @@ if ($result['admin_count'] == 0 && !file_exists('../config/setup.lock')) {
 <html lang="de">
 <head>
     <meta charset="UTF-8">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="googlebot" content="noindex, nofollow">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $setup_mode ? 'System Setup' : 'Admin Login'; ?></title>
     <link href="../assets/css/bootstrap.min.css" rel="stylesheet">
