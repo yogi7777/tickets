@@ -2,6 +2,7 @@
 // admin/index.php
 require_once '../config/database.php';
 require_once '../includes/auth.php';
+require_once '../session-check.php';
 
 $database = new Database();
 $db = $database->getConnection();
