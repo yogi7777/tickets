@@ -179,7 +179,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         continue;
                                     }
 
-                                    if ((int)$serialRow['is_active'] === 0) {
+                                    $isCurrentlyIssued = (int)$serialRow['is_currently_issued'] === 1;
+                                    $isActive = (int)$serialRow['is_active'] === 1;
+                                    $isAvailable = $serialRow['status'] === 'available';
+
+                                    // If an existing serial is re-added and not currently issued,
+                                    // make sure it is active and selectable again.
+                                    if (!$isCurrentlyIssued && (!$isActive || !$isAvailable)) {
                                         $activateSerialStmt->execute([$serialRow['id']]);
                                     }
 
@@ -248,7 +254,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Produkte abrufen
 $query = "SELECT p.*, 
-          GROUP_CONCAT(DISTINCT CASE WHEN ps.status = 'available' THEN ps.serial_number END ORDER BY ps.serial_number SEPARATOR ',') as serial_numbers,
+          GROUP_CONCAT(DISTINCT ps.serial_number ORDER BY ps.serial_number SEPARATOR ',') as serial_numbers,
           COUNT(DISTINCT ps.serial_number) as total_serials,
           COUNT(DISTINCT CASE WHEN ps.status = 'available' THEN ps.serial_number END) as available_serials
           FROM products p 

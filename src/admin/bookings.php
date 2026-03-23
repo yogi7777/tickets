@@ -39,10 +39,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                     $stmt->execute([$booking_id]);
                     $booking = $stmt->fetch(PDO::FETCH_ASSOC);
 
-                    // Buchung stornieren
-                    $query = "UPDATE bookings SET booking_status = 'cancelled' WHERE id = ?";
+                    // Buchung stornieren. Falls bereits abgeholt wurde, setzen wir auch
+                    // ticket_returned, damit die Buchung nicht als offen geführt wird.
+                    $query = "UPDATE bookings
+                              SET booking_status = 'cancelled',
+                                  ticket_returned = CASE
+                                      WHEN ticket_picked_up IS NOT NULL AND ticket_returned IS NULL THEN NOW()
+                                      ELSE ticket_returned
+                                  END
+                              WHERE id = ?";
                     $stmt = $db->prepare($query);
                     if ($stmt->execute([$booking_id])) {
+                        // Bereits ausgegebene Seriennummern bei Storno wieder freigeben.
+                        $releaseQuery = "UPDATE product_serials ps
+                                        JOIN booking_serials bs ON ps.id = bs.serial_id
+                                        SET ps.status = 'available',
+                                            bs.returned_at = COALESCE(bs.returned_at, NOW())
+                                        WHERE bs.booking_id = ?
+                                          AND bs.returned_at IS NULL";
+                        $releaseStmt = $db->prepare($releaseQuery);
+                        $releaseStmt->execute([$booking_id]);
+
                         // Stornierungsmail senden
                         $emailData = array(
                             'firstName' => $booking['customer_firstname'],
