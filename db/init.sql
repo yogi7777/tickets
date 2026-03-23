@@ -28,6 +28,7 @@ CREATE TABLE `product_serials` (
   `product_id` int(11) NOT NULL,
   `serial_number` varchar(100) NOT NULL,
   `status` ENUM('available', 'picked_up', 'returned') DEFAULT 'available',
+  `is_active` boolean DEFAULT true,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`product_id`) REFERENCES `products`(`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

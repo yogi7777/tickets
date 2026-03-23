@@ -34,7 +34,7 @@
                         </p>
                         <hr>
                         <p>
-                            Die Tickets können am Empfang abgeholt werden.
+                            Die Tickets können am VBL-Verkaufsschalter am Bahnhof Luzern abgeholt werden.
                         </p>
                         <div class="mt-4">
                             <a href="index.php" class="btn btn-primary">Zurück zur Startseite</a>

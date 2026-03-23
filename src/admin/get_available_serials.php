@@ -23,6 +23,7 @@ try {
     $query = "SELECT id, serial_number 
               FROM product_serials 
               WHERE product_id = ? 
+              AND is_active = 1
               AND status = 'available'
               ORDER BY serial_number";
     

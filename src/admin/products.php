@@ -13,6 +13,22 @@ $auth->requireLogin();
 $message = '';
 $messageType = '';
 
+function normalizeSerials(array $serials): array {
+    $normalized = [];
+
+    foreach ($serials as $serial) {
+        $serial = trim($serial);
+
+        if ($serial === '' || in_array($serial, $normalized, true)) {
+            continue;
+        }
+
+        $normalized[] = $serial;
+    }
+
+    return $normalized;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['action'])) {
         switch ($_POST['action']) {
@@ -21,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $description = $_POST['description'] ?? '';
                 $maxTickets = (int)($_POST['maxTickets'] ?? 4);
                 $active = isset($_POST['active']) ? 1 : 0;
-                $serials = $_POST['serials'] ?? [];
+                $serials = normalizeSerials($_POST['serials'] ?? []);
 
                 try {
                     $db->beginTransaction();
@@ -50,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         
                         // Seriennummern speichern
                         if (!empty($serials)) {
-                            $serialQuery = "INSERT INTO product_serials (product_id, serial_number, status) VALUES (?, ?, 'available')";
+                            $serialQuery = "INSERT INTO product_serials (product_id, serial_number, status, is_active) VALUES (?, ?, 'available', 1)";
                             $serialStmt = $db->prepare($serialQuery);
                             foreach ($serials as $serial) {
                                 if (!empty($serial)) {
@@ -76,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $description = $_POST['description'] ?? '';
                 $maxTickets = (int)($_POST['maxTickets'] ?? 4);
                 $active = isset($_POST['active']) ? 1 : 0;
-                $serials = $_POST['serials'] ?? [];
+                $serials = normalizeSerials($_POST['serials'] ?? []);
 
                 try {
                     $db->beginTransaction();
@@ -111,23 +127,96 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     
                     $stmt = $db->prepare($query);
                     if ($stmt->execute($params)) {
-                        // Bestehende nicht verwendete Seriennummern löschen
-                        $deleteQuery = "DELETE FROM product_serials 
-                                      WHERE product_id = ? 
-                                      AND status = 'available' 
-                                      AND id NOT IN (SELECT serial_id FROM booking_serials)";
-                        $deleteStmt = $db->prepare($deleteQuery);
-                        $deleteStmt->execute([$id]);
+                        $existingQuery = "SELECT ps.id, ps.serial_number, ps.status, ps.is_active,
+                                                 EXISTS(
+                                                     SELECT 1
+                                                     FROM booking_serials bs
+                                                     WHERE bs.serial_id = ps.id
+                                                       AND bs.returned_at IS NULL
+                                                 ) AS is_currently_issued
+                                          FROM product_serials ps
+                                          WHERE ps.product_id = ?";
+                        $existingStmt = $db->prepare($existingQuery);
+                        $existingStmt->execute([$id]);
+                        $existingSerials = $existingStmt->fetchAll(PDO::FETCH_ASSOC);
 
-                        // Neue Seriennummern hinzufügen
-                        if (!empty($serials)) {
-                            $serialQuery = "INSERT INTO product_serials (product_id, serial_number, status) VALUES (?, ?, 'available')";
-                            $serialStmt = $db->prepare($serialQuery);
-                            foreach ($serials as $serial) {
-                                if (!empty($serial)) {
-                                    $serialStmt->execute([$id, $serial]);
+                        $existingByNumber = [];
+                        foreach ($existingSerials as $existingSerial) {
+                            $existingByNumber[$existingSerial['serial_number']][] = $existingSerial;
+                        }
+
+                        $submittedSerials = array_fill_keys($serials, true);
+                        $activateSerialStmt = $db->prepare("UPDATE product_serials SET is_active = 1, status = 'available' WHERE id = ?");
+                        $deactivateSerialStmt = $db->prepare("UPDATE product_serials SET is_active = 0 WHERE id = ?");
+
+                        foreach ($existingByNumber as $serialNumber => $serialRows) {
+                            $serialShouldExist = isset($submittedSerials[$serialNumber]);
+                            $retainedSerialId = null;
+
+                            foreach ($serialRows as $serialRow) {
+                                if ((int)$serialRow['is_currently_issued'] === 1) {
+                                    $retainedSerialId = $serialRow['id'];
+                                    break;
                                 }
                             }
+
+                            if ($serialShouldExist && $retainedSerialId === null) {
+                                foreach ($serialRows as $serialRow) {
+                                    if ((int)$serialRow['is_active'] === 1) {
+                                        $retainedSerialId = $serialRow['id'];
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if ($serialShouldExist && $retainedSerialId === null) {
+                                $retainedSerialId = $serialRows[0]['id'];
+                            }
+
+                            if ($serialShouldExist && $retainedSerialId !== null) {
+                                foreach ($serialRows as $serialRow) {
+                                    if ($serialRow['id'] !== $retainedSerialId) {
+                                        continue;
+                                    }
+
+                                    if ((int)$serialRow['is_active'] === 0) {
+                                        $activateSerialStmt->execute([$serialRow['id']]);
+                                    }
+
+                                    break;
+                                }
+                            }
+
+                            foreach ($serialRows as $serialRow) {
+                                $isCurrentlyIssued = (int)$serialRow['is_currently_issued'] === 1;
+                                $isActive = (int)$serialRow['is_active'] === 1;
+
+                                if (!$serialShouldExist) {
+                                    if ($isCurrentlyIssued || !$isActive) {
+                                        continue;
+                                    }
+
+                                    $deactivateSerialStmt->execute([$serialRow['id']]);
+                                    continue;
+                                }
+
+                                if ($serialRow['id'] === $retainedSerialId || $isCurrentlyIssued || !$isActive) {
+                                    continue;
+                                }
+
+                                $deactivateSerialStmt->execute([$serialRow['id']]);
+                            }
+                        }
+
+                        $serialQuery = "INSERT INTO product_serials (product_id, serial_number, status, is_active) VALUES (?, ?, 'available', 1)";
+                        $serialStmt = $db->prepare($serialQuery);
+
+                        foreach ($serials as $serial) {
+                            if (isset($existingByNumber[$serial])) {
+                                continue;
+                            }
+
+                            $serialStmt->execute([$id, $serial]);
                         }
 
                         $db->commit();
@@ -159,11 +248,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Produkte abrufen
 $query = "SELECT p.*, 
-          GROUP_CONCAT(CASE WHEN ps.status = 'available' THEN ps.serial_number END) as serial_numbers,
-          COUNT(DISTINCT ps.id) as total_serials,
-          SUM(CASE WHEN ps.status = 'available' THEN 1 ELSE 0 END) as available_serials
+          GROUP_CONCAT(DISTINCT CASE WHEN ps.status = 'available' THEN ps.serial_number END ORDER BY ps.serial_number SEPARATOR ',') as serial_numbers,
+          COUNT(DISTINCT ps.serial_number) as total_serials,
+          COUNT(DISTINCT CASE WHEN ps.status = 'available' THEN ps.serial_number END) as available_serials
           FROM products p 
-          LEFT JOIN product_serials ps ON p.id = ps.product_id
+          LEFT JOIN product_serials ps ON p.id = ps.product_id AND ps.is_active = 1
           GROUP BY p.id
           ORDER BY p.created_at DESC";
 $stmt = $db->prepare($query);
