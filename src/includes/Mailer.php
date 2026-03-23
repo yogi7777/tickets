@@ -84,7 +84,7 @@ class Mailer {
                     <li>Datum: " . date('d.m.Y', strtotime($bookingData['date'])) . "</li>
                     <li>Anzahl Tickets: {$bookingData['ticketCount']}</li>
                 </ul>
-                <p>Mit freundlichen Grüssen<br>VBL</p>
+                <p>Freundliche Grüsse<br>VBL</p>
             </body>
             </html>";
     
