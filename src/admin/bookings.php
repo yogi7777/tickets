@@ -71,6 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                         );
                         $mailer = new Mailer();
                         $mailer->sendCancellationEmail($emailData);
+                        $mailer->sendCancellationAdminNotification($emailData);
                         
                         $db->commit();
                         $message = 'Buchung erfolgreich storniert';

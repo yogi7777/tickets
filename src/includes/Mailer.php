@@ -96,19 +96,27 @@ class Mailer {
         }
     }
     
+    private function addAdminRecipients() {
+        foreach (array_map('trim', explode(',', $this->config['admin_email'])) as $email) {
+            if (!empty($email)) {
+                $this->mailer->addAddress($email);
+            }
+        }
+    }
+
     // Das Gleiche auch für die Admin-Benachrichtigung
     public function sendAdminNotification($bookingData) {
         try {
-            
+
             $db = new Database();
             $conn = $db->getConnection();
             $query = "SELECT name FROM products WHERE id = ?";
             $stmt = $conn->prepare($query);
             $stmt->execute([$bookingData['productId']]);
             $product = $stmt->fetch(PDO::FETCH_ASSOC);
-            
+
             $this->mailer->clearAddresses();
-            $this->mailer->addAddress($this->config['admin_email']);
+            $this->addAdminRecipients();
             $this->mailer->isHTML(true);
             $this->mailer->Subject = 'Neue Ticketbuchung';
             
@@ -141,10 +149,10 @@ class Mailer {
     public function sendCancellationEmail($bookingData) {
         try {
             $this->mailer->clearAddresses();
-            $this->mailer->addAddress($bookingData['email']); // Geändert von 'email'
+            $this->mailer->addAddress($bookingData['email']);
             $this->mailer->isHTML(true);
             $this->mailer->Subject = 'Stornierung Ihrer Buchung';
-            
+
             $message = "
             <html>
             <head>
@@ -160,14 +168,47 @@ class Mailer {
                     <li>Anzahl Tickets: {$bookingData['number_of_tickets']} Stk.</li>
                 </ul>
                 <p>Bei Fragen kannst du dich gerne an uns wenden.</p>
-                <p>Mit freundlichen Grüssen<br> Admnistration</p>
+                <p>Mit freundlichen Grüssen<br> Administration</p>
             </body>
             </html>";
-    
+
             $this->mailer->Body = $message;
             return $this->mailer->send();
         } catch (Exception $e) {
-            error_log("Mail Error (Confirmation): " . $e->getMessage());
+            error_log("Mail Error (Cancellation Customer): " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function sendCancellationAdminNotification($bookingData) {
+        try {
+            $this->mailer->clearAddresses();
+            $this->addAdminRecipients();
+            $this->mailer->isHTML(true);
+            $this->mailer->Subject = 'Buchung storniert';
+
+            $message = "
+            <html>
+            <head>
+                <title>Buchung storniert</title>
+            </head>
+            <body>
+                <h2>Eine Buchung wurde storniert</h2>
+                <p>Details der stornierten Buchung:</p>
+                <ul>
+                    <li>Name: {$bookingData['firstName']} {$bookingData['lastName']}</li>
+                    <li>E-Mail: {$bookingData['email']}</li>
+                    <li>Produkt: {$bookingData['product_name']}</li>
+                    <li>Datum: " . date('d.m.Y', strtotime($bookingData['date'])) . "</li>
+                    <li>Anzahl Tickets: {$bookingData['number_of_tickets']} Stk.</li>
+                </ul>
+            </body>
+            </html>";
+
+            $this->mailer->Body = $message;
+            return $this->mailer->send();
+        } catch (Exception $e) {
+            error_log("Mail Error (Cancellation Admin): " . $e->getMessage());
             return false;
         }
     }
