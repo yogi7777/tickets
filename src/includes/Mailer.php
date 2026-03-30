@@ -35,6 +35,7 @@ class Mailer {
         $this->mailer->isSMTP();
         $this->mailer->Host = $this->config['host'];
         $this->mailer->Port = $this->config['port'];
+        $this->mailer->Timeout = 10;
         
         // Auth nur wenn Benutzername gesetzt
         if (!empty($this->config['username'])) {
@@ -53,6 +54,19 @@ class Mailer {
         // Default settings
         $this->mailer->setFrom($this->config['from_email'], $this->config['from_name']);
         $this->mailer->CharSet = 'UTF-8';
+
+        // Envelope-Sender (Return-Path für Bounces)
+        if (!empty($this->config['envelope_from'])) {
+            $this->mailer->Sender = $this->config['envelope_from'];
+        }
+
+        // Reply-To
+        if (!empty($this->config['use_reply_to']) && !empty($this->config['reply_to_email'])) {
+            $this->mailer->addReplyTo(
+                $this->config['reply_to_email'],
+                $this->config['reply_to_name'] ?? ''
+            );
+        }
     }
 
     public function sendConfirmationEmail($bookingData) {

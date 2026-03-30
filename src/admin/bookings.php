@@ -21,6 +21,7 @@ $ticket_status = $_GET['ticket_status'] ?? 'pending';  // Default: nur ausstehen
 // Nachricht Verarbeitung
 $message = '';
 $messageType = '';
+$pendingEmail = null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     switch ($_POST['action']) {
@@ -69,9 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                             'product_name' => $booking['product_name'],
                             'number_of_tickets' => $booking['number_of_tickets']
                         );
-                        $mailer = new Mailer();
-                        $mailer->sendCancellationEmail($emailData);
-                        $mailer->sendCancellationAdminNotification($emailData);
+                        $pendingEmail = $emailData;
                         
                         $db->commit();
                         $message = 'Buchung erfolgreich storniert';
@@ -524,3 +523,13 @@ function showReturnModal(bookingId) {
     <script src="../assets/js/dark-mode.js"></script>
 </body>
 </html>
+<?php
+if (!empty($pendingEmail)) {
+    if (function_exists('fastcgi_finish_request')) {
+        fastcgi_finish_request();
+    }
+    $mailer = new Mailer();
+    $mailer->sendCancellationEmail($pendingEmail);
+    $mailer->sendCancellationAdminNotification($pendingEmail);
+}
+?>

@@ -108,7 +108,16 @@ try {
                             throw new Exception("Datenbankfehler beim Speichern der Buchung");
                         }
 
-                        // E-Mails versenden
+                        $db->commit();
+
+                        // Antwort sofort an Browser senden
+                        echo json_encode(['success' => true]);
+
+                        // Verbindung zum Browser schliessen, E-Mails danach im Hintergrund versenden
+                        if (function_exists('fastcgi_finish_request')) {
+                            fastcgi_finish_request();
+                        }
+
                         if (!sendConfirmationEmail($data)) {
                             error_log('Fehler beim Senden der Bestätigungs-E-Mail');
                         }
@@ -116,9 +125,6 @@ try {
                         if (!sendAdminNotification($data)) {
                             error_log('Fehler beim Senden der Admin-Benachrichtigung');
                         }
-
-                        $db->commit();
-                        echo json_encode(['success' => true]);
 
                     } catch (Exception $e) {
                         $db->rollBack();
