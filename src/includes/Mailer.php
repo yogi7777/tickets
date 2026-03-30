@@ -182,7 +182,7 @@ class Mailer {
                     <li>Anzahl Tickets: {$bookingData['number_of_tickets']} Stk.</li>
                 </ul>
                 <p>Bei Fragen kannst du dich gerne an uns wenden.</p>
-                <p>Mit freundlichen Grüssen<br> Administration</p>
+                <p>Mit freundlichen Grüssen<br> VBL</p>
             </body>
             </html>";
 
