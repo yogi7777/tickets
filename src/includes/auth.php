@@ -18,8 +18,10 @@ class Auth {
         if ($stmt->rowCount() > 0) {
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
             if (password_verify($password, $user['password'])) {
+                session_regenerate_id(true); // Session-Fixation verhindern
                 $_SESSION['admin_id'] = $user['id'];
                 $_SESSION['admin_username'] = $user['username'];
+                $_SESSION['login_time'] = time();
                 return true;
             }
         }

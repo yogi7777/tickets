@@ -68,6 +68,9 @@ require_once __DIR__ . '/session-check.php';
     </style>
 </head>
 <body>
+    <div style="background-color: #ffc107; color: #000; text-align: center; padding: 6px 0; font-size: 0.9rem; font-weight: 500; width: 100%;">
+        Tickets sind am Bahnhofschalter abzuholen
+    </div>
     <div class="container mt-4">
         <div class="row mb-4">
             <div class="col-md-8">
@@ -132,23 +135,30 @@ require_once __DIR__ . '/session-check.php';
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Buchungsdetails</h5>
+                        <?php
+                            $userFullName = $_SESSION['user']['name'] ?? '';
+                            $nameParts = explode(' ', $userFullName, 2);
+                            $userFirstName = $nameParts[0] ?? '';
+                            $userLastName = $nameParts[1] ?? '';
+                            $userEmail = $_SESSION['user']['email'] ?? '';
+                        ?>
                         <form id="bookingForm" class="needs-validation" novalidate>
                             <input type="hidden" id="selectedDate" name="selectedDate">
                             <input type="hidden" id="productId" name="productId">
-                            
+
                             <div class="mb-3">
                                 <label for="firstName" class="form-label">Vorname</label>
-                                <input type="text" class="form-control" id="firstName" name="firstName" required>
+                                <input type="text" class="form-control" id="firstName" name="firstName" value="<?php echo htmlspecialchars($userFirstName); ?>" required>
                             </div>
-                            
+
                             <div class="mb-3">
                                 <label for="lastName" class="form-label">Nachname</label>
-                                <input type="text" class="form-control" id="lastName" name="lastName" required>
+                                <input type="text" class="form-control" id="lastName" name="lastName" value="<?php echo htmlspecialchars($userLastName); ?>" required>
                             </div>
-                            
+
                             <div class="mb-3">
                                 <label for="email" class="form-label">E-Mail</label>
-                                <input type="email" class="form-control" id="email" name="email" required>
+                                <input type="email" class="form-control" id="email" name="email" value="<?php echo htmlspecialchars($userEmail); ?>" required>
                             </div>
                             
                             <div class="mb-3">

@@ -1,16 +1,29 @@
 <?php
-header("Access-Control-Allow-Origin: *");
+// CORS: Nur Anfragen vom eigenen Host erlauben
+// APP_ORIGIN in config.php auf die tatsächliche Domain setzen (z.B. 'https://example.com')
+require_once '../config.php';
+
+$requestOrigin = $_SERVER['HTTP_ORIGIN'] ?? '';
+if ($requestOrigin === APP_ORIGIN) {
+    header("Access-Control-Allow-Origin: " . APP_ORIGIN);
+    header("Vary: Origin");
+}
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: POST, GET");
 header("Access-Control-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(204);
+    exit;
+}
+
 include_once '../config/database.php';
 include_once '../includes/functions.php';
 
-// Debug-Logging aktivieren
+// Fehler nur loggen, nie ausgeben
 error_reporting(E_ALL);
-ini_set('display_errors', 1);
+ini_set('display_errors', 0);
 ini_set('log_errors', 1);
 ini_set('error_log', '../logs/api_errors.log');
 
