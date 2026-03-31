@@ -316,9 +316,6 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <td>
                                 <?php 
                                 echo $product['available_serials'] . ' verfügbar';
-                                if ($product['total_serials'] > $product['available_serials']) {
-                                    echo ' / ' . ($product['total_serials'] - $product['available_serials']) . ' in Verwendung';
-                                }
                                 ?>
                             </td>
                             <td>

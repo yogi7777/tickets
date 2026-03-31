@@ -69,18 +69,18 @@ require_once __DIR__ . '/session-check.php';
 </head>
 <body>
     <div style="background-color: #ffc107; color: #000; text-align: center; padding: 6px 0; font-size: 0.9rem; font-weight: 500; width: 100%;">
-        Tickets sind am Bahnhofschalter abzuholen
+        Tickets sind am vbl Bahnhofsschalter abzuholen
     </div>
     <div class="container mt-4">
         <div class="row mb-4">
-            <div class="col-md-8">
+            <div class="col-md-8 mx-auto">
                     <h1 class="mb-4 text-center">Ticket Buchung</h1>
             </div>
         </div>
-        
+
         <div class="row mb-4">
             <!-- Produkt Kacheln -->
-            <div class="col-md-8">
+            <div class="col-md-8 mx-auto">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Produkt auswählen</h5>
@@ -120,7 +120,7 @@ require_once __DIR__ . '/session-check.php';
 
         <!-- Kalender -->
         <div class="row mb-4">
-            <div class="col-md-8">
+            <div class="col-md-8 mx-auto">
                 <div class="card h-100">
                     <div class="card-body">
                         <div id="calendar" style="touch-action: manipulation;"></div>
@@ -128,10 +128,10 @@ require_once __DIR__ . '/session-check.php';
                 </div>
             </div>
         </div>
-        
+
         <!-- Buchungsformular -->
         <div class="row mb-4">
-            <div class="col-md-8">
+            <div class="col-md-8 mx-auto">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Buchungsdetails</h5>
