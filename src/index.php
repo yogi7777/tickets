@@ -114,6 +114,9 @@ require_once __DIR__ . '/session-check.php';
                             <?php } ?>
                         </div>
                     </div>
+                    <div class="text-center mt-3 mb-2">
+                        <a href="YOURURL" target="_blank">Mehr Vergünstigungen auf dem Intranet</a>
+                    </div>
                 </div>
             </div>
         </div>
